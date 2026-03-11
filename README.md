@@ -130,6 +130,40 @@ Pipeline stages:
 4. `translations:import-models`
 5. `translations:export-files`
 
+## Generating translatable JSON migrations
+
+The package can generate a snapshot-based Laravel migration for safely converting
+existing scalar/text translatable columns into JSON columns without runtime model scanning inside the migration.
+
+```bash
+php artisan translations:make-translatable-migration convert_translatable_fields_to_json --locale=en
+```
+
+Available options:
+
+```bash
+php artisan translations:make-translatable-migration
+    {name?}
+    {--paths=*}
+    {--locale=en}
+    {--chunk=500}
+    {--force}
+```
+
+The command:
+
+- discovers models using `Spatie\Translatable\HasTranslations`
+- filters only real DB columns
+- writes a fixed snapshot of models, tables, primary keys and translatable attributes
+- generates a self-contained migration in `database/migrations`
+
+The generated migration:
+
+- creates `__json_tmp` columns in `up()`
+- wraps old scalar values as `{"<locale>":"value"}`
+- renames temp JSON columns back to the original names
+- restores values back to `text` columns in `down()` using the chosen locale
+
 ## Source of truth
 
 - `translations:export-models`: models are source of truth

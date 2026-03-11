@@ -7,17 +7,20 @@ use BlackstonePro\ModelTranslationsSync\Commands\ExportFilesCommand;
 use BlackstonePro\ModelTranslationsSync\Commands\ExportModelsCommand;
 use BlackstonePro\ModelTranslationsSync\Commands\ImportFilesCommand;
 use BlackstonePro\ModelTranslationsSync\Commands\ImportModelsCommand;
+use BlackstonePro\ModelTranslationsSync\Commands\MakeTranslatableMigrationCommand;
 use BlackstonePro\ModelTranslationsSync\Commands\SyncTranslationsCommand;
 use BlackstonePro\ModelTranslationsSync\Services\FileExporterService;
 use BlackstonePro\ModelTranslationsSync\Services\FileImporterService;
 use BlackstonePro\ModelTranslationsSync\Services\ModelDiscoveryService;
 use BlackstonePro\ModelTranslationsSync\Services\ModelExporterService;
 use BlackstonePro\ModelTranslationsSync\Services\ModelImporterService;
+use BlackstonePro\ModelTranslationsSync\Services\TranslatableModelsDiscovery;
 use BlackstonePro\ModelTranslationsSync\Services\TranslationSyncPipeline;
 use BlackstonePro\ModelTranslationsSync\Support\LangFileReader;
 use BlackstonePro\ModelTranslationsSync\Support\LangFileWriter;
 use BlackstonePro\ModelTranslationsSync\Support\ModelKeyParser;
 use BlackstonePro\ModelTranslationsSync\Support\NamespaceResolver;
+use BlackstonePro\ModelTranslationsSync\Support\TranslatableMigrationGenerator;
 
 class ModelTranslationsSyncServiceProvider extends ServiceProvider
 {
@@ -34,6 +37,8 @@ class ModelTranslationsSyncServiceProvider extends ServiceProvider
         $this->app->singleton(ModelImporterService::class);
         $this->app->singleton(FileExporterService::class);
         $this->app->singleton(FileImporterService::class);
+        $this->app->singleton(TranslatableModelsDiscovery::class);
+        $this->app->singleton(TranslatableMigrationGenerator::class);
         $this->app->singleton(TranslationSyncPipeline::class);
     }
 
@@ -50,6 +55,7 @@ class ModelTranslationsSyncServiceProvider extends ServiceProvider
                 ExportFilesCommand::class,
                 ImportFilesCommand::class,
                 SyncTranslationsCommand::class,
+                MakeTranslatableMigrationCommand::class,
             ]);
         }
     }

@@ -41,4 +41,13 @@ return [
             'export_files' => true,
         ],
     ],
+
+    'translatable_migration' => [
+        'paths' => [
+            app_path('Models'),
+        ],
+        'output_path' => database_path('migrations'),
+        'default_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+        'chunk' => 500,
+    ],
 ];

@@ -32,6 +32,12 @@ abstract class TestCase extends Orchestra
         $app['config']->set('model-translations.models.paths', [
             __DIR__.'/Fixtures/App/Models',
         ]);
+        $app['config']->set('model-translations.translatable_migration.paths', [
+            __DIR__.'/Fixtures/App/Models',
+        ]);
+        $app['config']->set('model-translations.translatable_migration.output_path', __DIR__.'/tmp/migrations');
+        $app['config']->set('model-translations.translatable_migration.default_locale', 'en');
+        $app['config']->set('model-translations.translatable_migration.chunk', 500);
         $app['config']->set('model-translations.models.list', [
             Fixtures\App\Models\Product::class,
         ]);
@@ -66,6 +72,18 @@ abstract class TestCase extends Orchestra
         Schema::create('plain_models', function (Blueprint $table): void {
             $table->id();
             $table->string('name')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('categories', function (Blueprint $table): void {
+            $table->string('uuid')->primary();
+            $table->string('title')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('invalid_columns', function (Blueprint $table): void {
+            $table->id();
+            $table->string('slug')->nullable();
             $table->timestamps();
         });
 
