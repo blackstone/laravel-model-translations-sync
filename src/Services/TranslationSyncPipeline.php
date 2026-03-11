@@ -26,13 +26,13 @@ class TranslationSyncPipeline
         if (($stages['larex_export'] ?? false) && $this->hasCommand('larex:export')) {
             $command->line('Running larex:export');
             Artisan::call('larex:export');
-            $command->output->write(Artisan::output());
+            $this->writeArtisanOutput($command);
         }
 
         if (($stages['larex_import'] ?? false) && $this->hasCommand('larex:import')) {
             $command->line('Running larex:import');
             Artisan::call('larex:import');
-            $command->output->write(Artisan::output());
+            $this->writeArtisanOutput($command);
         }
 
         if ($stages['import_models'] ?? false) {
@@ -51,5 +51,16 @@ class TranslationSyncPipeline
     protected function hasCommand(string $name): bool
     {
         return array_key_exists($name, Artisan::all());
+    }
+
+    protected function writeArtisanOutput(Command $command): void
+    {
+        $output = trim(Artisan::output());
+
+        if ($output === '') {
+            return;
+        }
+
+        $command->line($output);
     }
 }
