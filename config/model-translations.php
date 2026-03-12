@@ -33,12 +33,28 @@ return [
     ],
 
     'sync' => [
-        'stages' => [
-            'export_models' => true,
-            'larex_export' => true,
-            'larex_import' => true,
-            'import_models' => true,
-            'export_files' => true,
+        'stop_on_error' => false,
+        'pipeline' => [
+            [
+                'command' => 'translations:export-models',
+                'enabled' => true,
+            ],
+            [
+                'command' => 'translations:vendor-export',
+                'enabled' => false,
+            ],
+            [
+                'command' => 'translations:vendor-import',
+                'enabled' => false,
+            ],
+            [
+                'command' => 'translations:import-models',
+                'enabled' => true,
+            ],
+            [
+                'command' => 'translations:export-files',
+                'enabled' => true,
+            ],
         ],
     ],
 

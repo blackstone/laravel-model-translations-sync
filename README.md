@@ -5,11 +5,11 @@ Laravel package for synchronizing translations between:
 - translatable Eloquent model JSON attributes via `spatie/laravel-translatable`
 - `language_lines` via `spatie/laravel-translation-loader`
 - local Laravel `lang` files
-- external translation flows such as Crowdin / larex
+- external translation services such as Crowdin, Lokalise or custom project commands
 
 Pipeline target:
 
-`Models -> DB (language_lines) -> Crowdin/larex -> DB -> Models -> Files`
+`Models -> DB (language_lines) -> external service -> DB -> Models -> Files`
 
 ## Requirements
 
@@ -88,7 +88,8 @@ Main options:
 - `ignore_groups`: groups ignored during file export
 - `export_path`: destination for generated lang files
 - `export.overwrite`, `export.pretty_print`, `export.sort_keys`
-- `sync.stages.*`: enable or disable sync pipeline stages
+- `sync.stop_on_error`: stop or continue when a pipeline step fails
+- `sync.pipeline`: ordered list of artisan commands for the sync pipeline
 
 ## Commands
 
@@ -122,13 +123,22 @@ Run the full pipeline:
 php artisan translations:sync {--dry-run}
 ```
 
-Pipeline stages:
+Pipeline is config-driven. Example:
 
-1. `translations:export-models`
-2. `larex:export` if command exists and stage is enabled
-3. `larex:import` if command exists and stage is enabled
-4. `translations:import-models`
-5. `translations:export-files`
+```php
+'sync' => [
+    'stop_on_error' => true,
+    'pipeline' => [
+        ['command' => 'translations:export-models', 'enabled' => true],
+        ['command' => 'crowdin:upload', 'enabled' => true],
+        ['command' => 'crowdin:download', 'enabled' => true],
+        ['command' => 'translations:import-models', 'enabled' => true],
+        ['command' => 'translations:export-files', 'enabled' => true],
+    ],
+],
+```
+
+`translations:sync` executes enabled commands in order, warns about missing or failing steps, and stops only when `sync.stop_on_error` is `true`.
 
 ## Generating translatable JSON migrations
 

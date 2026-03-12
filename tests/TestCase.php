@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\TranslationLoader\TranslationServiceProvider;
 use BlackstonePro\ModelTranslationsSync\ModelTranslationsSyncServiceProvider;
+use BlackstonePro\ModelTranslationsSync\Tests\Fixtures\Support\TestConsoleServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -16,6 +17,7 @@ abstract class TestCase extends Orchestra
         return [
             TranslationServiceProvider::class,
             ModelTranslationsSyncServiceProvider::class,
+            TestConsoleServiceProvider::class,
         ];
     }
 
